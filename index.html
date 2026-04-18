@@ -3,20 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CYBER CHRONO // WARP</title>
+<title>CYBER CHRONO // QUIET</title>
 <style>
   :root {
     --neon-pink: #ff2bd6;
     --neon-magenta: #ff00a8;
     --neon-cyan: #00f0ff;
     --neon-blue: #2b5bff;
-    --neon-lime: #b6ff1a;
-    --neon-yellow: #fff200;
     --neon-violet: #9d00ff;
     --bg-0: #03010a;
-    --bg-1: #08021c;
-    --bg-2: #15022e;
-    --scan: rgba(0, 240, 255, 0.045);
+    --bg-1: #07021a;
+    --bg-2: #100426;
+    --scan: rgba(0, 240, 255, 0.04);
   }
 
   * { box-sizing: border-box; }
@@ -30,38 +28,34 @@
     font-family: "Share Tech Mono", "SF Mono", "Menlo", "Consolas", monospace;
     color: var(--neon-cyan);
     background:
-      radial-gradient(ellipse at 50% 35%, rgba(0, 240, 255, 0.18), transparent 55%),
-      radial-gradient(ellipse at 20% 90%, rgba(255, 0, 168, 0.32), transparent 55%),
-      radial-gradient(ellipse at 80% 95%, rgba(157, 0, 255, 0.4), transparent 60%),
-      linear-gradient(180deg, var(--bg-0), var(--bg-1) 50%, var(--bg-2));
-    display: grid;
-    place-items: center;
+      radial-gradient(ellipse at 50% 78%, rgba(255, 0, 168, 0.22), transparent 55%),
+      radial-gradient(ellipse at 50% 95%, rgba(157, 0, 255, 0.35), transparent 60%),
+      linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
     min-height: 100vh;
     overflow: hidden;
     position: relative;
   }
 
-  /* far-distance horizon haze */
-  body::before {
-    content: "";
+  /* horizon line glow */
+  .horizon {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0;
-    height: 55%;
-    background:
-      linear-gradient(to top, rgba(255, 0, 168, 0.15), transparent 70%),
-      repeating-linear-gradient(
-        to top,
-        transparent 0,
-        transparent 6px,
-        rgba(0, 240, 255, 0.04) 6px,
-        rgba(0, 240, 255, 0.04) 7px
-      );
-    mask-image: linear-gradient(to top, black, transparent);
-    -webkit-mask-image: linear-gradient(to top, black, transparent);
+    top: 78%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 240, 255, 0.45),
+      rgba(255, 43, 214, 0.55),
+      rgba(0, 240, 255, 0.45),
+      transparent
+    );
+    box-shadow:
+      0 0 14px rgba(0, 240, 255, 0.55),
+      0 0 30px rgba(255, 0, 168, 0.4);
+    z-index: 1;
     pointer-events: none;
-    z-index: 0;
   }
 
   /* CRT scanlines */
@@ -81,141 +75,119 @@
     z-index: 30;
   }
 
-  /* ===== MIRAGE DIGITAL CLOCK (background, huge) ===== */
+  /* ===== MIRAGE DIGITAL CLOCK (far horizon) ===== */
   .mirage {
     position: fixed;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    z-index: 1;
+    left: 0;
+    right: 0;
+    top: 78%;
+    transform: translateY(-100%);
+    text-align: center;
+    z-index: 2;
     pointer-events: none;
     user-select: none;
   }
 
   .mirage-stack {
     position: relative;
-    width: 100%;
-    text-align: center;
-    transform: translateY(-2%);
+    display: inline-block;
+    transform: perspective(800px) rotateX(18deg);
+    transform-origin: 50% 100%;
   }
 
   .mirage-time {
     font-family: "Share Tech Mono", "SF Mono", monospace;
     font-weight: 700;
-    font-size: clamp(120px, 32vw, 480px);
+    font-size: clamp(80px, 18vw, 260px);
     line-height: 0.85;
-    letter-spacing: -0.02em;
-    color: rgba(255, 255, 255, 0.0);
+    letter-spacing: 0.02em;
+    color: transparent;
     background:
       linear-gradient(
         180deg,
         rgba(0, 240, 255, 0.0) 0%,
-        rgba(0, 240, 255, 0.55) 18%,
-        rgba(255, 43, 214, 0.7) 50%,
-        rgba(157, 0, 255, 0.55) 78%,
-        rgba(255, 0, 168, 0.0) 100%
+        rgba(0, 240, 255, 0.4) 25%,
+        rgba(255, 43, 214, 0.55) 65%,
+        rgba(157, 0, 255, 0.0) 100%
       );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: url(#heatHaze) blur(0.5px);
-    text-shadow: 0 0 60px rgba(0, 240, 255, 0.15);
+    filter: url(#heatHaze) blur(0.6px);
     mix-blend-mode: screen;
-    opacity: 0.85;
-    animation: mirageSway 9s ease-in-out infinite;
+    opacity: 0.7;
+    animation: mirageSway 11s ease-in-out infinite;
   }
 
-  /* second layer: deep echo behind */
   .mirage-echo {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
     font-family: "Share Tech Mono", "SF Mono", monospace;
     font-weight: 700;
-    font-size: clamp(120px, 32vw, 480px);
+    font-size: clamp(80px, 18vw, 260px);
     line-height: 0.85;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(0, 240, 255, 0.25);
-    text-stroke: 1px rgba(0, 240, 255, 0.25);
-    filter: blur(8px);
+    -webkit-text-stroke: 1px rgba(0, 240, 255, 0.18);
+    filter: blur(10px);
     transform: scale(1.04);
-    animation: mirageDrift 14s ease-in-out infinite;
+    opacity: 0.55;
+    animation: mirageDrift 16s ease-in-out infinite;
   }
 
   .mirage-meta {
-    margin-top: clamp(4px, 1vh, 12px);
-    font-size: clamp(11px, 1.6vmin, 14px);
-    letter-spacing: 0.6em;
-    color: rgba(255, 0, 168, 0.55);
-    text-shadow:
-      0 0 8px rgba(255, 0, 168, 0.5),
-      0 0 18px rgba(157, 0, 255, 0.4);
+    margin-top: 6px;
+    font-size: clamp(10px, 1.3vmin, 12px);
+    letter-spacing: 0.7em;
+    color: rgba(255, 0, 168, 0.4);
+    text-shadow: 0 0 10px rgba(255, 0, 168, 0.4);
     text-transform: uppercase;
     filter: blur(0.4px);
   }
 
   @keyframes mirageSway {
     0%, 100% { transform: translateY(0) skewX(0deg); }
-    25%      { transform: translateY(-4px) skewX(0.3deg); }
-    50%      { transform: translateY(2px) skewX(-0.3deg); }
-    75%      { transform: translateY(-3px) skewX(0.2deg); }
+    50%      { transform: translateY(-2px) skewX(0.2deg); }
   }
 
   @keyframes mirageDrift {
-    0%, 100% { transform: scale(1.04) translateY(0); opacity: 0.65; }
-    50%      { transform: scale(1.07) translateY(-6px); opacity: 0.9; }
+    0%, 100% { transform: scale(1.04) translateY(0); opacity: 0.45; }
+    50%      { transform: scale(1.06) translateY(-3px); opacity: 0.7; }
   }
 
-  /* ===== WARP PORTAL ANALOG CLOCK ===== */
+  /* ===== QUIET ANALOG CLOCK ===== */
   .stage {
-    position: relative;
+    position: fixed;
+    left: 50%;
+    top: 42%;
+    transform: translate(-50%, -50%);
     z-index: 5;
-    width: min(78vmin, 540px);
+    width: min(46vmin, 360px);
     aspect-ratio: 1 / 1;
-    display: grid;
-    place-items: center;
     isolation: isolate;
   }
 
-  /* outer halo (energy bloom) */
+  /* soft outer halo */
   .stage::before {
     content: "";
     position: absolute;
-    inset: -22%;
-    background:
-      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.35), transparent 55%),
-      radial-gradient(circle at 50% 50%, rgba(255, 0, 168, 0.3), transparent 65%);
-    filter: blur(40px);
-    z-index: -2;
-    animation: haloPulse 4s ease-in-out infinite;
-  }
-
-  @keyframes haloPulse {
-    0%, 100% { opacity: 0.85; transform: scale(1); }
-    50%      { opacity: 1; transform: scale(1.05); }
-  }
-
-  /* portal energy ring (rotating conic gradient) */
-  .stage::after {
-    content: "";
-    position: absolute;
-    inset: -4%;
-    border-radius: 50%;
-    background: conic-gradient(
-      from 0deg,
-      var(--neon-cyan),
-      var(--neon-pink),
-      var(--neon-violet),
-      var(--neon-yellow),
-      var(--neon-lime),
-      var(--neon-cyan)
+    inset: -18%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 240, 255, 0.22),
+      rgba(255, 0, 168, 0.08) 45%,
+      transparent 65%
     );
-    filter: blur(14px);
-    opacity: 0.7;
+    filter: blur(28px);
     z-index: -1;
-    animation: spin 6s linear infinite;
-    mask: radial-gradient(circle, transparent 56%, black 60%, black 72%, transparent 78%);
-    -webkit-mask: radial-gradient(circle, transparent 56%, black 60%, black 72%, transparent 78%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.04); }
   }
 
   .clock {
@@ -224,109 +196,24 @@
     height: 100%;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
-      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.12) 30%, transparent 60%),
-      radial-gradient(circle at 50% 50%, rgba(157, 0, 255, 0.18) 60%, transparent 90%);
-    border: 2px solid rgba(0, 240, 255, 0.7);
+      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.06), transparent 70%);
+    border: 1px solid rgba(0, 240, 255, 0.55);
     box-shadow:
-      0 0 30px rgba(0, 240, 255, 0.6),
-      0 0 70px rgba(255, 0, 168, 0.5),
-      inset 0 0 60px rgba(0, 240, 255, 0.35),
-      inset 0 0 120px rgba(255, 0, 168, 0.25);
+      0 0 18px rgba(0, 240, 255, 0.45),
+      inset 0 0 30px rgba(0, 240, 255, 0.18);
   }
 
-  /* warp tunnel: nested rings receding into center */
-  .tunnel {
+  /* one quiet inner ring */
+  .clock::after {
+    content: "";
     position: absolute;
-    inset: 0;
+    inset: 8%;
     border-radius: 50%;
-    overflow: hidden;
+    border: 1px solid rgba(255, 43, 214, 0.35);
+    box-shadow:
+      0 0 10px rgba(255, 43, 214, 0.25),
+      inset 0 0 14px rgba(255, 43, 214, 0.18);
     pointer-events: none;
-  }
-
-  .tunnel .ring {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 240, 255, 0.5);
-    transform: translate(-50%, -50%);
-    animation: warpZoom 4s linear infinite;
-    box-shadow:
-      0 0 12px rgba(0, 240, 255, 0.6),
-      inset 0 0 12px rgba(255, 0, 168, 0.5);
-  }
-  .tunnel .ring:nth-child(1) { animation-delay: 0s;   border-color: rgba(0, 240, 255, 0.8); }
-  .tunnel .ring:nth-child(2) { animation-delay: 0.5s; border-color: rgba(255, 43, 214, 0.7); }
-  .tunnel .ring:nth-child(3) { animation-delay: 1.0s; border-color: rgba(182, 255, 26, 0.7); }
-  .tunnel .ring:nth-child(4) { animation-delay: 1.5s; border-color: rgba(157, 0, 255, 0.8); }
-  .tunnel .ring:nth-child(5) { animation-delay: 2.0s; border-color: rgba(255, 242, 0, 0.7); }
-  .tunnel .ring:nth-child(6) { animation-delay: 2.5s; border-color: rgba(0, 240, 255, 0.7); }
-  .tunnel .ring:nth-child(7) { animation-delay: 3.0s; border-color: rgba(255, 0, 168, 0.7); }
-  .tunnel .ring:nth-child(8) { animation-delay: 3.5s; border-color: rgba(43, 91, 255, 0.7); }
-
-  @keyframes warpZoom {
-    0%   { width: 4%;   height: 4%;   opacity: 0; }
-    20%  { opacity: 1; }
-    100% { width: 110%; height: 110%; opacity: 0; }
-  }
-
-  /* radial light beams from center */
-  .beams {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    overflow: hidden;
-    background:
-      conic-gradient(
-        from 0deg,
-        transparent 0deg,
-        rgba(0, 240, 255, 0.35) 4deg,
-        transparent 8deg,
-        transparent 30deg,
-        rgba(255, 0, 168, 0.3) 34deg,
-        transparent 38deg,
-        transparent 60deg,
-        rgba(182, 255, 26, 0.3) 64deg,
-        transparent 68deg,
-        transparent 90deg,
-        rgba(157, 0, 255, 0.35) 94deg,
-        transparent 98deg,
-        transparent 120deg,
-        rgba(0, 240, 255, 0.3) 124deg,
-        transparent 128deg,
-        transparent 150deg,
-        rgba(255, 242, 0, 0.3) 154deg,
-        transparent 158deg,
-        transparent 180deg,
-        rgba(0, 240, 255, 0.35) 184deg,
-        transparent 188deg,
-        transparent 210deg,
-        rgba(255, 0, 168, 0.3) 214deg,
-        transparent 218deg,
-        transparent 240deg,
-        rgba(182, 255, 26, 0.3) 244deg,
-        transparent 248deg,
-        transparent 270deg,
-        rgba(157, 0, 255, 0.35) 274deg,
-        transparent 278deg,
-        transparent 300deg,
-        rgba(0, 240, 255, 0.3) 304deg,
-        transparent 308deg,
-        transparent 330deg,
-        rgba(255, 242, 0, 0.3) 334deg,
-        transparent 338deg,
-        transparent 360deg
-      );
-    mask: radial-gradient(circle, transparent 8%, black 18%, transparent 95%);
-    -webkit-mask: radial-gradient(circle, transparent 8%, black 18%, transparent 95%);
-    animation: spin 18s linear infinite reverse;
-    mix-blend-mode: screen;
-    opacity: 0.85;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
 
   .ticks {
@@ -338,57 +225,27 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 2px;
-    height: 48%;
+    width: 1px;
+    height: 50%;
     transform-origin: 50% 0;
     transform: translate(-50%, 0) rotate(var(--r));
+    pointer-events: none;
   }
 
   .tick i {
     display: block;
-    width: 2px;
-    height: 8px;
-    background: var(--neon-cyan);
-    margin: 8px auto 0;
-    border-radius: 2px;
-    box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan);
+    width: 1px;
+    height: 4px;
+    background: rgba(0, 240, 255, 0.45);
+    margin: 6px auto 0;
+    border-radius: 1px;
   }
 
   .tick.major i {
-    width: 4px;
-    height: 20px;
-    background: var(--neon-pink);
-    box-shadow:
-      0 0 10px var(--neon-pink),
-      0 0 20px var(--neon-magenta),
-      0 0 30px var(--neon-magenta);
-  }
-
-  .numbers {
-    position: absolute;
-    inset: 0;
-  }
-
-  .number {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    font-family: "Share Tech Mono", "SF Mono", monospace;
-    font-size: clamp(12px, 2.4vmin, 20px);
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--neon-lime);
-    transform: translate(-50%, -50%) translate(var(--x), var(--y));
-    text-shadow:
-      0 0 6px var(--neon-lime),
-      0 0 14px var(--neon-lime);
-  }
-
-  .number.quarter {
-    color: var(--neon-yellow);
-    text-shadow:
-      0 0 8px var(--neon-yellow),
-      0 0 18px var(--neon-yellow);
+    width: 2px;
+    height: 10px;
+    background: rgba(0, 240, 255, 0.85);
+    box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
   }
 
   .hand {
@@ -402,117 +259,89 @@
   }
 
   .hand.hour {
-    width: 8px;
+    width: 4px;
     height: 26%;
-    background: linear-gradient(180deg, #ffffff, var(--neon-cyan));
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), var(--neon-cyan));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow:
-      0 0 10px var(--neon-cyan),
-      0 0 20px var(--neon-cyan),
-      0 0 30px var(--neon-blue);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
   }
 
   .hand.minute {
-    width: 5px;
-    height: 36%;
-    background: linear-gradient(180deg, #ffffff, var(--neon-pink));
+    width: 3px;
+    height: 38%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), var(--neon-cyan));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow:
-      0 0 10px var(--neon-pink),
-      0 0 22px var(--neon-magenta),
-      0 0 34px var(--neon-magenta);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
   }
 
   .hand.second {
-    width: 2px;
+    width: 1px;
     height: 44%;
-    background: linear-gradient(180deg, var(--neon-yellow), var(--neon-lime));
+    background: linear-gradient(180deg, var(--neon-pink), rgba(255,43,214,0.4));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow:
-      0 0 8px var(--neon-yellow),
-      0 0 18px var(--neon-lime),
-      0 0 28px var(--neon-lime);
+    box-shadow: 0 0 8px rgba(255, 43, 214, 0.7);
   }
 
-  /* singularity core at center */
+  /* tiny still center */
   .core {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 36px;
-    height: 36px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: radial-gradient(
-      circle at 35% 35%,
-      #ffffff 0%,
-      var(--neon-cyan) 30%,
-      var(--neon-pink) 60%,
-      var(--neon-violet) 90%
-    );
+    background: #ffffff;
     transform: translate(-50%, -50%);
     box-shadow:
-      0 0 18px #ffffff,
-      0 0 36px var(--neon-cyan),
-      0 0 60px var(--neon-pink),
-      0 0 90px var(--neon-violet);
+      0 0 6px #ffffff,
+      0 0 14px var(--neon-cyan);
     z-index: 7;
-    animation: corePulse 1.6s ease-in-out infinite;
-  }
-
-  @keyframes corePulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50%      { transform: translate(-50%, -50%) scale(1.18); }
   }
 
   /* HUD corners */
   .corner {
     position: fixed;
     font-size: 11px;
-    color: var(--neon-cyan);
+    color: rgba(0, 240, 255, 0.7);
     letter-spacing: 0.25em;
-    text-shadow: 0 0 6px var(--neon-cyan);
+    text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
     z-index: 31;
-    opacity: 0.85;
   }
   .corner.tl { top: 16px; left: 20px; }
-  .corner.tr { top: 16px; right: 20px; color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink); }
-  .corner.bl { bottom: 16px; left: 20px; color: var(--neon-lime); text-shadow: 0 0 6px var(--neon-lime); }
-  .corner.br { bottom: 16px; right: 20px; color: var(--neon-yellow); text-shadow: 0 0 6px var(--neon-yellow); }
-
-  .hint {
-    position: fixed;
-    bottom: 18px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 12px;
-    color: var(--neon-violet);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    text-shadow: 0 0 6px var(--neon-violet), 0 0 14px var(--neon-violet);
-    z-index: 31;
-  }
+  .corner.tr { top: 16px; right: 20px; color: rgba(255, 43, 214, 0.7); text-shadow: 0 0 6px rgba(255, 43, 214, 0.6); }
+  .corner.bl { bottom: 16px; left: 20px; color: rgba(157, 0, 255, 0.75); text-shadow: 0 0 6px rgba(157, 0, 255, 0.6); }
+  .corner.br { bottom: 16px; right: 20px; color: rgba(0, 240, 255, 0.7); text-shadow: 0 0 6px rgba(0, 240, 255, 0.6); }
 </style>
 </head>
 <body>
-  <!-- SVG filter for heat-haze mirage distortion -->
   <svg width="0" height="0" style="position:absolute">
     <defs>
       <filter id="heatHaze" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.025" numOctaves="2" seed="3">
-          <animate attributeName="baseFrequency" dur="18s" values="0.012 0.025;0.018 0.04;0.012 0.025" repeatCount="indefinite"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="3">
+          <animate attributeName="baseFrequency" dur="22s" values="0.012 0.03;0.018 0.045;0.012 0.03" repeatCount="indefinite"/>
         </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" scale="14"/>
+        <feDisplacementMap in="SourceGraphic" scale="10"/>
       </filter>
     </defs>
   </svg>
 
   <div class="corner tl">◤ DIM::SHIFT_03</div>
-  <div class="corner tr">WARP STABLE ▮▮▮▮▯</div>
+  <div class="corner tr">SIGNAL ▮▮▮▯▯</div>
   <div class="corner bl">FIELD φ 0.998</div>
-  <div class="corner br">CORE ∞</div>
+  <div class="corner br">QUIET MODE ◇</div>
 
-  <!-- background mirage digital clock -->
+  <div class="horizon"></div>
+
+  <main class="stage" aria-label="アナログ時計">
+    <div class="clock">
+      <div class="ticks" id="ticks"></div>
+      <div class="hand hour" id="hour"></div>
+      <div class="hand minute" id="minute"></div>
+      <div class="hand second" id="second"></div>
+      <div class="core"></div>
+    </div>
+  </main>
+
   <div class="mirage" aria-hidden="true">
     <div class="mirage-stack">
       <div class="mirage-echo" id="echo">00:00:00</div>
@@ -521,29 +350,9 @@
     </div>
   </div>
 
-  <!-- foreground warp portal analog clock -->
-  <main class="stage" aria-label="ワープ装置型アナログ時計">
-    <div class="clock">
-      <div class="beams"></div>
-      <div class="tunnel">
-        <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
-        <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
-      </div>
-      <div class="ticks" id="ticks"></div>
-      <div class="numbers" id="numbers"></div>
-      <div class="hand hour" id="hour"></div>
-      <div class="hand minute" id="minute"></div>
-      <div class="hand second" id="second"></div>
-      <div class="core"></div>
-    </div>
-  </main>
-
-  <div class="hint">// MIRAGE ⨯ WARP · TEMPORAL FIELD ENGAGED</div>
-
 <script>
   (function () {
     const ticksEl = document.getElementById("ticks");
-    const numbersEl = document.getElementById("numbers");
 
     for (let i = 0; i < 60; i++) {
       const t = document.createElement("div");
@@ -551,20 +360,6 @@
       t.style.setProperty("--r", `${i * 6}deg`);
       t.innerHTML = "<i></i>";
       ticksEl.appendChild(t);
-    }
-
-    const radius = 42;
-    for (let n = 1; n <= 12; n++) {
-      const angle = (n / 12) * Math.PI * 2 - Math.PI / 2;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-      const el = document.createElement("div");
-      const isQuarter = n % 3 === 0;
-      el.className = "number" + (isQuarter ? " quarter" : "");
-      el.style.setProperty("--x", `${x}%`);
-      el.style.setProperty("--y", `${y}%`);
-      el.textContent = String(n).padStart(2, "0");
-      numbersEl.appendChild(el);
     }
 
     const hourHand = document.getElementById("hour");
