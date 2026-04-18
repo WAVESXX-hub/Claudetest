@@ -274,11 +274,11 @@
       0 0 30px rgba(255, 100, 0, 0.35);
   }
 
-  @keyframes streak {
-    0%   { opacity: 0; transform: translate(var(--x0), var(--y0)) rotate(var(--a)); }
+  @keyframes orbit-streak {
+    0%   { offset-distance: 0%;   opacity: 0; transform: scale(1); }
     10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(var(--x1), var(--y1)) rotate(var(--a)); }
+    85%  { opacity: 1; transform: scale(1); }
+    100% { offset-distance: 100%; opacity: 0; transform: scale(0.3); }
   }
 
   .panel-meta .dot {
@@ -643,6 +643,20 @@
 
     const rand = (a, b) => a + Math.random() * (b - a);
 
+    function sunScreenPos() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const centerX = vw / 2;
+      const centerY = vh * 0.42;
+      const orrR = Math.min(Math.min(vw, vh) * 0.92, 720) / 2;
+      const { sunLon } = celestial(new Date());
+      const rad = (sunLon * Math.PI) / 180;
+      return {
+        x: centerX + orrR * Math.sin(rad),
+        y: centerY - orrR * Math.cos(rad),
+      };
+    }
+
     function launchMeteor(delay) {
       const m = document.createElement("div");
       const color = Math.random() < 0.2 ? "amber" : "cyan";
@@ -650,25 +664,41 @@
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const angleDeg = rand(18, 32);                 // down-right slope
-      const rad = (angleDeg * Math.PI) / 180;
-      const length = rand(180, 360);
-      const duration = rand(700, 1200);
-      const startY = rand(-vh * 0.3, vh * 0.5);
-      const startX = -length - rand(0, vw * 0.2);
-      const travel = vw + length * 2 + rand(0, vw * 0.3);
-      const dx = Math.cos(rad) * travel;
-      const dy = Math.sin(rad) * travel;
+      const sun = sunScreenPos();
+
+      // Start at a random point outside the viewport
+      const edge = Math.floor(Math.random() * 4);
+      let x0, y0;
+      if      (edge === 0) { x0 = rand(-80, vw + 80); y0 = -80; }
+      else if (edge === 1) { x0 = vw + 80;             y0 = rand(-80, vh + 80); }
+      else if (edge === 2) { x0 = rand(-80, vw + 80); y0 = vh + 80; }
+      else                 { x0 = -80;                  y0 = rand(-80, vh + 80); }
+
+      // Quadratic-Bezier control point offset perpendicular to the chord.
+      // This produces a curved orbital arc into the Sun rather than a line.
+      const mx = (x0 + sun.x) / 2;
+      const my = (y0 + sun.y) / 2;
+      const dx = sun.x - x0;
+      const dy = sun.y - y0;
+      const dist = Math.max(1, Math.hypot(dx, dy));
+      const nx = -dy / dist;
+      const ny =  dx / dist;
+      const sign = Math.random() < 0.5 ? 1 : -1;
+      const bend = sign * dist * rand(0.25, 0.5);
+      const cpx = mx + nx * bend;
+      const cpy = my + ny * bend;
+
+      const length = rand(160, 320);
+      const duration = rand(1600, 2400);
 
       m.style.width = `${length}px`;
-      m.style.setProperty("--a", `${angleDeg}deg`);
-      m.style.setProperty("--x0", `${startX}px`);
-      m.style.setProperty("--y0", `${startY}px`);
-      m.style.setProperty("--x1", `${startX + dx}px`);
-      m.style.setProperty("--y1", `${startY + dy}px`);
-      m.style.left = `0`;
-      m.style.top = `0`;
-      m.style.animation = `streak ${duration}ms linear ${delay}ms forwards`;
+      m.style.left = "0";
+      m.style.top = "0";
+      m.style.offsetPath =
+        `path("M ${x0.toFixed(1)} ${y0.toFixed(1)} Q ${cpx.toFixed(1)} ${cpy.toFixed(1)} ${sun.x.toFixed(1)} ${sun.y.toFixed(1)}")`;
+      m.style.offsetRotate = "auto";
+      m.style.offsetAnchor = "100% 50%";
+      m.style.animation = `orbit-streak ${duration}ms cubic-bezier(0.45, 0, 0.95, 0.75) ${delay}ms forwards`;
 
       m.addEventListener("animationend", () => m.remove());
       meteorsEl.appendChild(m);
