@@ -2,8 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CYBER CHRONO // QUIET</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>CYBER CHRONO</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Chrono" />
+<meta name="theme-color" content="#000000" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="apple-touch-icon" href="icon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300&family=Orbitron:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -39,6 +46,11 @@
     min-height: 100vh;
     overflow: hidden;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
   }
 
   /* TRON grid floor */
@@ -601,10 +613,10 @@
     text-transform: uppercase;
     z-index: 31;
   }
-  .corner.tl { top: 16px; left: 20px; }
-  .corner.tr { top: 16px; right: 20px; color: rgba(255, 159, 28, 0.8); text-shadow: 0 0 6px rgba(255, 159, 28, 0.7); }
-  .corner.bl { bottom: 16px; left: 20px; color: rgba(125, 249, 255, 0.7); text-shadow: 0 0 6px rgba(125, 249, 255, 0.6); }
-  .corner.br { bottom: 16px; right: 20px; color: rgba(255, 159, 28, 0.7); text-shadow: 0 0 6px rgba(255, 159, 28, 0.6); }
+  .corner.tl { top: calc(16px + env(safe-area-inset-top)); left: calc(20px + env(safe-area-inset-left)); }
+  .corner.tr { top: calc(16px + env(safe-area-inset-top)); right: calc(20px + env(safe-area-inset-right)); color: rgba(255, 159, 28, 0.8); text-shadow: 0 0 6px rgba(255, 159, 28, 0.7); }
+  .corner.bl { bottom: calc(16px + env(safe-area-inset-bottom)); left: calc(20px + env(safe-area-inset-left)); color: rgba(125, 249, 255, 0.7); text-shadow: 0 0 6px rgba(125, 249, 255, 0.6); }
+  .corner.br { bottom: calc(16px + env(safe-area-inset-bottom)); right: calc(20px + env(safe-area-inset-right)); color: rgba(255, 159, 28, 0.7); text-shadow: 0 0 6px rgba(255, 159, 28, 0.6); }
 </style>
 </head>
 <body>
