@@ -4,17 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CYBER CHRONO // QUIET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300&family=Orbitron:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --neon-pink: #ff2bd6;
-    --neon-magenta: #ff00a8;
-    --neon-cyan: #00f0ff;
-    --neon-blue: #2b5bff;
-    --neon-violet: #9d00ff;
-    --bg-0: #03010a;
-    --bg-1: #07021a;
-    --bg-2: #100426;
-    --scan: rgba(0, 240, 255, 0.04);
+    --tron-cyan: #7df9ff;
+    --tron-cyan-2: #00d8ff;
+    --tron-blue: #1ea7ff;
+    --tron-orange: #ff9f1c;
+    --tron-amber: #ffb347;
+    --tron-deep: #002b3a;
+    --bg-0: #000000;
+    --bg-1: #02070d;
+    --bg-2: #050d18;
+    --scan: rgba(125, 249, 255, 0.035);
   }
 
   * { box-sizing: border-box; }
@@ -25,15 +29,43 @@
   }
 
   body {
-    font-family: "Share Tech Mono", "SF Mono", "Menlo", "Consolas", monospace;
-    color: var(--neon-cyan);
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    color: var(--tron-cyan);
     background:
-      radial-gradient(ellipse at 50% 78%, rgba(255, 0, 168, 0.22), transparent 55%),
-      radial-gradient(ellipse at 50% 95%, rgba(157, 0, 255, 0.35), transparent 60%),
-      linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+      radial-gradient(ellipse at 50% 60%, rgba(30, 167, 255, 0.18), transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(125, 249, 255, 0.18), transparent 65%),
+      linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 70%, var(--bg-2) 100%);
     min-height: 100vh;
     overflow: hidden;
     position: relative;
+  }
+
+  /* TRON grid floor */
+  body::before {
+    content: "";
+    position: fixed;
+    left: -10%;
+    right: -10%;
+    bottom: 0;
+    height: 55%;
+    background-image:
+      linear-gradient(var(--tron-cyan) 1px, transparent 1px),
+      linear-gradient(90deg, var(--tron-cyan) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px;
+    background-position: 0 0;
+    opacity: 0.22;
+    transform: perspective(600px) rotateX(62deg);
+    transform-origin: 50% 100%;
+    mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent 85%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95), transparent 85%);
+    pointer-events: none;
+    z-index: 0;
+    animation: gridScroll 6s linear infinite;
+  }
+
+  @keyframes gridScroll {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 0 80px, 0 0; }
   }
 
   /* horizon line glow */
@@ -46,14 +78,14 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(0, 240, 255, 0.45),
-      rgba(255, 43, 214, 0.55),
-      rgba(0, 240, 255, 0.45),
+      rgba(125, 249, 255, 0.85),
+      rgba(255, 159, 28, 0.6),
+      rgba(125, 249, 255, 0.85),
       transparent
     );
     box-shadow:
-      0 0 14px rgba(0, 240, 255, 0.55),
-      0 0 30px rgba(255, 0, 168, 0.4);
+      0 0 14px rgba(125, 249, 255, 0.7),
+      0 0 32px rgba(125, 249, 255, 0.45);
     z-index: 1;
     pointer-events: none;
   }
@@ -96,26 +128,28 @@
   }
 
   .mirage-time {
-    font-family: "Share Tech Mono", "SF Mono", monospace;
-    font-weight: 700;
+    font-family: "Orbitron", "Inter", system-ui, sans-serif;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
     font-size: clamp(80px, 18vw, 260px);
     line-height: 0.85;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
     color: transparent;
     background:
       linear-gradient(
         180deg,
-        rgba(0, 240, 255, 0.0) 0%,
-        rgba(0, 240, 255, 0.4) 25%,
-        rgba(255, 43, 214, 0.55) 65%,
-        rgba(157, 0, 255, 0.0) 100%
+        rgba(125, 249, 255, 0.0) 0%,
+        rgba(125, 249, 255, 0.55) 30%,
+        rgba(125, 249, 255, 0.85) 60%,
+        rgba(255, 159, 28, 0.45) 100%
       );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: url(#heatHaze) blur(0.6px);
+    filter: url(#heatHaze) blur(0.4px);
     mix-blend-mode: screen;
-    opacity: 0.7;
+    opacity: 0.85;
     animation: mirageSway 11s ease-in-out infinite;
   }
 
@@ -124,27 +158,31 @@
     left: 0;
     right: 0;
     top: 0;
-    font-family: "Share Tech Mono", "SF Mono", monospace;
-    font-weight: 700;
+    font-family: "Orbitron", "Inter", system-ui, sans-serif;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
     font-size: clamp(80px, 18vw, 260px);
     line-height: 0.85;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(0, 240, 255, 0.18);
-    filter: blur(10px);
-    transform: scale(1.04);
-    opacity: 0.55;
+    -webkit-text-stroke: 1px rgba(125, 249, 255, 0.35);
+    filter: blur(8px);
+    transform: scale(1.03);
+    opacity: 0.7;
     animation: mirageDrift 16s ease-in-out infinite;
   }
 
   .mirage-meta {
-    margin-top: 6px;
-    font-size: clamp(10px, 1.3vmin, 12px);
-    letter-spacing: 0.7em;
-    color: rgba(255, 0, 168, 0.4);
-    text-shadow: 0 0 10px rgba(255, 0, 168, 0.4);
+    margin-top: 12px;
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    font-weight: 200;
+    font-size: clamp(10px, 1.2vmin, 12px);
+    letter-spacing: 0.5em;
+    color: rgba(255, 159, 28, 0.55);
+    text-shadow: 0 0 10px rgba(255, 159, 28, 0.45);
     text-transform: uppercase;
-    filter: blur(0.4px);
+    filter: blur(0.3px);
   }
 
   @keyframes mirageSway {
@@ -176,8 +214,8 @@
     inset: -18%;
     background: radial-gradient(
       circle at 50% 50%,
-      rgba(0, 240, 255, 0.22),
-      rgba(255, 0, 168, 0.08) 45%,
+      rgba(125, 249, 255, 0.28),
+      rgba(30, 167, 255, 0.12) 45%,
       transparent 65%
     );
     filter: blur(28px);
@@ -196,23 +234,24 @@
     height: 100%;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.06), transparent 70%);
-    border: 1px solid rgba(0, 240, 255, 0.55);
+      radial-gradient(circle at 50% 50%, rgba(125, 249, 255, 0.06), transparent 70%);
+    border: 1px solid rgba(125, 249, 255, 0.75);
     box-shadow:
-      0 0 18px rgba(0, 240, 255, 0.45),
-      inset 0 0 30px rgba(0, 240, 255, 0.18);
+      0 0 18px rgba(125, 249, 255, 0.55),
+      0 0 36px rgba(30, 167, 255, 0.35),
+      inset 0 0 30px rgba(125, 249, 255, 0.22);
   }
 
-  /* one quiet inner ring */
+  /* one quiet inner ring (orange accent) */
   .clock::after {
     content: "";
     position: absolute;
     inset: 8%;
     border-radius: 50%;
-    border: 1px solid rgba(255, 43, 214, 0.35);
+    border: 1px solid rgba(255, 159, 28, 0.4);
     box-shadow:
-      0 0 10px rgba(255, 43, 214, 0.25),
-      inset 0 0 14px rgba(255, 43, 214, 0.18);
+      0 0 10px rgba(255, 159, 28, 0.3),
+      inset 0 0 14px rgba(255, 159, 28, 0.18);
     pointer-events: none;
   }
 
@@ -236,7 +275,7 @@
     display: block;
     width: 1px;
     height: 4px;
-    background: rgba(0, 240, 255, 0.45);
+    background: rgba(125, 249, 255, 0.5);
     margin: 6px auto 0;
     border-radius: 1px;
   }
@@ -244,8 +283,8 @@
   .tick.major i {
     width: 2px;
     height: 10px;
-    background: rgba(0, 240, 255, 0.85);
-    box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+    background: rgba(125, 249, 255, 0.95);
+    box-shadow: 0 0 6px rgba(125, 249, 255, 0.8);
   }
 
   .hand {
@@ -261,25 +300,25 @@
   .hand.hour {
     width: 4px;
     height: 26%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9), var(--neon-cyan));
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), var(--tron-cyan));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 8px rgba(125, 249, 255, 0.85);
   }
 
   .hand.minute {
     width: 3px;
     height: 38%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.95), var(--neon-cyan));
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), var(--tron-cyan));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+    box-shadow: 0 0 10px rgba(125, 249, 255, 0.85);
   }
 
   .hand.second {
     width: 1px;
     height: 44%;
-    background: linear-gradient(180deg, var(--neon-pink), rgba(255,43,214,0.4));
+    background: linear-gradient(180deg, var(--tron-orange), rgba(255,159,28,0.4));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 8px rgba(255, 43, 214, 0.7);
+    box-shadow: 0 0 8px rgba(255, 159, 28, 0.85);
   }
 
   /* tiny still center */
@@ -294,23 +333,26 @@
     transform: translate(-50%, -50%);
     box-shadow:
       0 0 6px #ffffff,
-      0 0 14px var(--neon-cyan);
+      0 0 14px var(--tron-cyan);
     z-index: 7;
   }
 
   /* HUD corners */
   .corner {
     position: fixed;
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 300;
     font-size: 11px;
-    color: rgba(0, 240, 255, 0.7);
-    letter-spacing: 0.25em;
-    text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+    color: rgba(125, 249, 255, 0.8);
+    letter-spacing: 0.4em;
+    text-shadow: 0 0 6px rgba(125, 249, 255, 0.7);
+    text-transform: uppercase;
     z-index: 31;
   }
   .corner.tl { top: 16px; left: 20px; }
-  .corner.tr { top: 16px; right: 20px; color: rgba(255, 43, 214, 0.7); text-shadow: 0 0 6px rgba(255, 43, 214, 0.6); }
-  .corner.bl { bottom: 16px; left: 20px; color: rgba(157, 0, 255, 0.75); text-shadow: 0 0 6px rgba(157, 0, 255, 0.6); }
-  .corner.br { bottom: 16px; right: 20px; color: rgba(0, 240, 255, 0.7); text-shadow: 0 0 6px rgba(0, 240, 255, 0.6); }
+  .corner.tr { top: 16px; right: 20px; color: rgba(255, 159, 28, 0.8); text-shadow: 0 0 6px rgba(255, 159, 28, 0.7); }
+  .corner.bl { bottom: 16px; left: 20px; color: rgba(125, 249, 255, 0.7); text-shadow: 0 0 6px rgba(125, 249, 255, 0.6); }
+  .corner.br { bottom: 16px; right: 20px; color: rgba(255, 159, 28, 0.7); text-shadow: 0 0 6px rgba(255, 159, 28, 0.6); }
 </style>
 </head>
 <body>
@@ -325,10 +367,10 @@
     </defs>
   </svg>
 
-  <div class="corner tl">◤ DIM::SHIFT_03</div>
-  <div class="corner tr">SIGNAL ▮▮▮▯▯</div>
-  <div class="corner bl">FIELD φ 0.998</div>
-  <div class="corner br">QUIET MODE ◇</div>
+  <div class="corner tl">USR / FLYNN</div>
+  <div class="corner tr">GRID — ENC SEC</div>
+  <div class="corner bl">CYCLE 1982</div>
+  <div class="corner br">END OF LINE</div>
 
   <div class="horizon"></div>
 
