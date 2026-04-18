@@ -681,8 +681,8 @@
       const centerX = vw / 2;
       const centerY = vh * 0.42;
       const orrR = Math.min(Math.min(vw, vh) * 0.92, 720) / 2;
-      const { sunLon } = celestial(new Date());
-      const rad = (sunLon * Math.PI) / 180;
+      const { sunSky } = skyPositions(new Date());
+      const rad = (sunSky * Math.PI) / 180;
       return {
         x: centerX + orrR * Math.sin(rad),
         y: centerY - orrR * Math.cos(rad),
@@ -765,6 +765,21 @@
       return { sunLon, moonLon, phase };
     }
 
+    // Observer frame: Sun and Moon circle the sky once per day due to Earth's
+    // rotation. Sun is at the top of the dial at solar noon. Moon lags the Sun
+    // by the synodic phase angle: new moon → together, full moon → opposite.
+    function skyPositions(now) {
+      const { phase } = celestial(now);
+      const localHour =
+        now.getHours() +
+        now.getMinutes() / 60 +
+        now.getSeconds() / 3600 +
+        now.getMilliseconds() / 3600000;
+      const sunSky  = (((localHour - 12) * 15) % 360 + 360) % 360;
+      const moonSky = ((sunSky + phase) % 360 + 360) % 360;
+      return { sunSky, moonSky, phase };
+    }
+
     const pad = (n) => String(n).padStart(2, "0");
 
     let calendarKey = "";
@@ -808,9 +823,9 @@
 
       renderCalendar(now);
 
-      const { sunLon, moonLon, phase } = celestial(now);
-      sunArm.style.transform  = `translate(-50%, -50%) rotate(${sunLon}deg)`;
-      moonArm.style.transform = `translate(-50%, -50%) rotate(${moonLon}deg)`;
+      const { sunSky, moonSky, phase } = skyPositions(now);
+      sunArm.style.transform  = `translate(-50%, -50%) rotate(${sunSky}deg)`;
+      moonArm.style.transform = `translate(-50%, -50%) rotate(${moonSky}deg)`;
       // moon phase: shadow slides from -100% (new) to +100% (full)
       const t = Math.cos((phase * Math.PI) / 180);
       moonShadow.style.transform = `translateX(${t * 100}%)`;
