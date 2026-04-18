@@ -227,6 +227,60 @@
     min-width: 3ch;
   }
 
+  /* ===== METEOR SHOWER (every :00 and :30) ===== */
+  .meteors {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 20;
+  }
+
+  .meteor {
+    position: absolute;
+    height: 2px;
+    border-radius: 2px;
+    transform-origin: 0 50%;
+    will-change: transform, opacity;
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
+    animation-fill-mode: forwards;
+  }
+
+  .meteor.cyan {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(125, 249, 255, 0.15) 20%,
+      rgba(125, 249, 255, 0.85) 70%,
+      #ffffff 100%
+    );
+    box-shadow:
+      0 0 6px rgba(125, 249, 255, 0.9),
+      0 0 16px rgba(125, 249, 255, 0.6),
+      0 0 30px rgba(30, 167, 255, 0.35);
+  }
+
+  .meteor.amber {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 159, 28, 0.15) 20%,
+      rgba(255, 159, 28, 0.9) 70%,
+      #fff2d6 100%
+    );
+    box-shadow:
+      0 0 6px rgba(255, 159, 28, 0.9),
+      0 0 16px rgba(255, 159, 28, 0.6),
+      0 0 30px rgba(255, 100, 0, 0.35);
+  }
+
+  @keyframes streak {
+    0%   { opacity: 0; transform: translate(var(--x0), var(--y0)) rotate(var(--a)); }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--x1), var(--y1)) rotate(var(--a)); }
+  }
+
   .panel-meta .dot {
     width: 4px; height: 4px;
     background: var(--tron-orange);
@@ -516,6 +570,8 @@
 </style>
 </head>
 <body>
+  <div class="meteors" id="meteors"></div>
+
   <div class="corner tl">USR / FLYNN</div>
   <div class="corner tr">GRID — ENC SEC</div>
   <div class="corner bl">CYCLE 1982</div>
@@ -583,6 +639,63 @@
     const sunArm = document.getElementById("sunArm");
     const moonArm = document.getElementById("moonArm");
     const moonShadow = document.getElementById("moonShadow");
+    const meteorsEl = document.getElementById("meteors");
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    function launchMeteor(delay) {
+      const m = document.createElement("div");
+      const color = Math.random() < 0.2 ? "amber" : "cyan";
+      m.className = `meteor ${color}`;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const angle = rand(18, 32);        // degrees below horizontal
+      const a = -angle;                  // CSS rotate is clockwise-negative for upward slope
+      const length = rand(180, 360);
+      const duration = rand(700, 1200);
+      const startY = rand(-vh * 0.2, vh * 0.7);
+      const startX = -length - rand(0, vw * 0.2);
+      const travel = vw + length + rand(0, vw * 0.3);
+      const dx = travel;
+      const dy = travel * Math.tan((angle * Math.PI) / 180);
+
+      m.style.width = `${length}px`;
+      m.style.setProperty("--a", `${a}deg`);
+      m.style.setProperty("--x0", `${startX}px`);
+      m.style.setProperty("--y0", `${startY}px`);
+      m.style.setProperty("--x1", `${startX + dx}px`);
+      m.style.setProperty("--y1", `${startY + dy}px`);
+      m.style.left = `0`;
+      m.style.top = `0`;
+      m.style.animation = `streak ${duration}ms linear ${delay}ms forwards`;
+
+      m.addEventListener("animationend", () => m.remove());
+      meteorsEl.appendChild(m);
+    }
+
+    function meteorShower() {
+      const count = 24;
+      for (let i = 0; i < count; i++) {
+        launchMeteor(rand(0, 3500) + i * 40);
+      }
+    }
+
+    let lastShowerKey = null;
+    function maybeTriggerShower(now) {
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+      if ((m === 0 || m === 30) && s < 2) {
+        const key = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}-${m}`;
+        if (key !== lastShowerKey) {
+          lastShowerKey = key;
+          meteorShower();
+        }
+      }
+    }
+
+    // preview shower on load so the feature is visible
+    setTimeout(meteorShower, 1200);
 
     const J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
     function celestial(now) {
@@ -621,6 +734,8 @@
       // moon phase: shadow slides from -100% (new) to +100% (full)
       const t = Math.cos((phase * Math.PI) / 180);
       moonShadow.style.transform = `translateX(${t * 100}%)`;
+
+      maybeTriggerShower(now);
 
       requestAnimationFrame(tick);
     }
