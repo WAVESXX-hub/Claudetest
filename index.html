@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hybrid Clock</title>
+<title>CYBER CHRONO // HYBRID</title>
 <style>
   :root {
-    --bg-1: #0b1020;
-    --bg-2: #1a1f3a;
-    --accent: #6ee7ff;
-    --accent-2: #ff6ec7;
-    --tick: rgba(255, 255, 255, 0.55);
-    --tick-strong: rgba(255, 255, 255, 0.95);
-    --face: rgba(255, 255, 255, 0.04);
-    --face-border: rgba(255, 255, 255, 0.18);
-    --digital: #e8f9ff;
-    --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    --neon-pink: #ff2bd6;
+    --neon-magenta: #ff00a8;
+    --neon-cyan: #00f0ff;
+    --neon-blue: #2b5bff;
+    --neon-lime: #b6ff1a;
+    --neon-yellow: #fff200;
+    --neon-violet: #9d00ff;
+    --bg-0: #05020d;
+    --bg-1: #0b0320;
+    --bg-2: #1a0330;
+    --scan: rgba(0, 240, 255, 0.05);
   }
 
   * { box-sizing: border-box; }
@@ -26,16 +27,51 @@
   }
 
   body {
-    font-family: "Helvetica Neue", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
-    color: var(--digital);
+    font-family: "Share Tech Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    color: var(--neon-cyan);
     background:
-      radial-gradient(circle at 20% 20%, rgba(110, 231, 255, 0.15), transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(255, 110, 199, 0.15), transparent 50%),
-      linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      radial-gradient(ellipse at 20% 10%, rgba(255, 0, 168, 0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(0, 240, 255, 0.3), transparent 55%),
+      radial-gradient(ellipse at 50% 120%, rgba(157, 0, 255, 0.45), transparent 60%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1) 50%, var(--bg-2));
     display: grid;
     place-items: center;
     min-height: 100vh;
     overflow: hidden;
+    position: relative;
+  }
+
+  /* cyber grid floor */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--neon-cyan) 1px, transparent 1px),
+      linear-gradient(90deg, var(--neon-magenta) 1px, transparent 1px);
+    background-size: 48px 48px, 48px 48px;
+    opacity: 0.08;
+    mask-image: radial-gradient(ellipse at 50% 100%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 100%, black 0%, transparent 70%);
+    transform: perspective(500px) rotateX(60deg) translateY(30%) scale(2);
+    pointer-events: none;
+  }
+
+  /* scanlines */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      var(--scan) 3px,
+      var(--scan) 4px
+    );
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 10;
   }
 
   .clock {
@@ -44,21 +80,65 @@
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06), transparent 65%),
-      conic-gradient(from 0deg, rgba(110, 231, 255, 0.08), rgba(255, 110, 199, 0.08), rgba(110, 231, 255, 0.08));
-    border: 1px solid var(--face-border);
-    box-shadow: var(--shadow), inset 0 0 40px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
+      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.06), transparent 65%),
+      conic-gradient(
+        from 0deg,
+        rgba(255, 0, 168, 0.18),
+        rgba(0, 240, 255, 0.18),
+        rgba(157, 0, 255, 0.18),
+        rgba(182, 255, 26, 0.18),
+        rgba(255, 0, 168, 0.18)
+      );
+    border: 2px solid var(--neon-cyan);
+    box-shadow:
+      0 0 30px rgba(0, 240, 255, 0.6),
+      0 0 60px rgba(255, 0, 168, 0.4),
+      inset 0 0 40px rgba(0, 240, 255, 0.25),
+      inset 0 0 80px rgba(255, 0, 168, 0.25);
+    animation: ringPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes ringPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 30px rgba(0, 240, 255, 0.6),
+        0 0 60px rgba(255, 0, 168, 0.4),
+        inset 0 0 40px rgba(0, 240, 255, 0.25),
+        inset 0 0 80px rgba(255, 0, 168, 0.25);
+    }
+    50% {
+      box-shadow:
+        0 0 50px rgba(255, 0, 168, 0.85),
+        0 0 100px rgba(0, 240, 255, 0.6),
+        inset 0 0 50px rgba(255, 0, 168, 0.35),
+        inset 0 0 100px rgba(0, 240, 255, 0.35);
+    }
   }
 
   .clock::before {
     content: "";
     position: absolute;
-    inset: 6%;
+    inset: 4%;
     border-radius: 50%;
-    background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05), transparent 60%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 0, 168, 0.6);
+    box-shadow:
+      inset 0 0 30px rgba(157, 0, 255, 0.35),
+      0 0 14px rgba(255, 0, 168, 0.5);
     pointer-events: none;
+  }
+
+  .clock::after {
+    content: "";
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    border: 1px dashed rgba(0, 240, 255, 0.5);
+    pointer-events: none;
+    animation: spin 30s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
   .ticks {
@@ -80,16 +160,20 @@
     display: block;
     width: 2px;
     height: 10px;
-    background: var(--tick);
+    background: var(--neon-cyan);
     margin: 6px auto 0;
     border-radius: 2px;
+    box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan);
   }
 
   .tick.major i {
-    width: 3px;
-    height: 18px;
-    background: var(--tick-strong);
-    box-shadow: 0 0 8px rgba(110, 231, 255, 0.55);
+    width: 4px;
+    height: 22px;
+    background: var(--neon-pink);
+    box-shadow:
+      0 0 10px var(--neon-pink),
+      0 0 20px var(--neon-magenta),
+      0 0 30px var(--neon-magenta);
   }
 
   .numbers {
@@ -101,12 +185,24 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    font-size: clamp(14px, 2.6vmin, 22px);
-    font-weight: 600;
+    font-family: "Share Tech Mono", "SF Mono", monospace;
+    font-size: clamp(16px, 3vmin, 26px);
+    font-weight: 700;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--neon-lime);
     transform: translate(-50%, -50%) translate(var(--x), var(--y));
-    text-shadow: 0 0 10px rgba(110, 231, 255, 0.35);
+    text-shadow:
+      0 0 6px var(--neon-lime),
+      0 0 14px var(--neon-lime),
+      0 0 22px rgba(182, 255, 26, 0.6);
+  }
+
+  .number.quarter {
+    color: var(--neon-yellow);
+    text-shadow:
+      0 0 8px var(--neon-yellow),
+      0 0 18px var(--neon-yellow),
+      0 0 28px rgba(255, 242, 0, 0.7);
   }
 
   .hand {
@@ -119,90 +215,150 @@
   }
 
   .hand.hour {
-    width: 6px;
+    width: 8px;
     height: 26%;
-    background: linear-gradient(180deg, #ffffff, #9fb4ff);
+    background: linear-gradient(180deg, #ffffff, var(--neon-cyan));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 12px rgba(159, 180, 255, 0.6);
+    box-shadow:
+      0 0 10px var(--neon-cyan),
+      0 0 20px var(--neon-cyan),
+      0 0 30px var(--neon-blue);
   }
 
   .hand.minute {
-    width: 4px;
+    width: 5px;
     height: 36%;
-    background: linear-gradient(180deg, var(--accent), #4a90e2);
+    background: linear-gradient(180deg, #ffffff, var(--neon-pink));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 14px rgba(110, 231, 255, 0.75);
+    box-shadow:
+      0 0 10px var(--neon-pink),
+      0 0 22px var(--neon-magenta),
+      0 0 34px var(--neon-magenta);
   }
 
   .hand.second {
     width: 2px;
-    height: 42%;
-    background: linear-gradient(180deg, var(--accent-2), #ff9eb5);
+    height: 44%;
+    background: linear-gradient(180deg, var(--neon-yellow), var(--neon-lime));
     transform: translate(-50%, -100%) rotate(0deg);
-    box-shadow: 0 0 16px rgba(255, 110, 199, 0.8);
+    box-shadow:
+      0 0 8px var(--neon-yellow),
+      0 0 18px var(--neon-lime),
+      0 0 28px var(--neon-lime);
   }
 
   .cap {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #ffffff, #6ee7ff 60%, #2a3a6b);
+    background: radial-gradient(circle at 35% 35%, #ffffff, var(--neon-pink) 55%, var(--neon-violet));
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 14px rgba(110, 231, 255, 0.8), inset 0 0 4px rgba(0, 0, 0, 0.4);
+    box-shadow:
+      0 0 14px var(--neon-pink),
+      0 0 28px var(--neon-magenta),
+      0 0 44px var(--neon-violet),
+      inset 0 0 6px rgba(0, 0, 0, 0.4);
+    z-index: 5;
   }
 
   .digital {
     position: absolute;
     left: 50%;
-    top: 62%;
+    top: 64%;
     transform: translate(-50%, -50%);
     text-align: center;
     pointer-events: none;
     user-select: none;
+    z-index: 4;
   }
 
   .digital .time {
-    font-family: "SF Mono", "Menlo", "Consolas", monospace;
-    font-size: clamp(18px, 4.8vmin, 38px);
+    font-family: "Share Tech Mono", "SF Mono", "Menlo", monospace;
+    font-size: clamp(20px, 5.2vmin, 42px);
     font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--digital);
+    letter-spacing: 0.18em;
+    color: #ffffff;
     text-shadow:
-      0 0 8px rgba(110, 231, 255, 0.6),
-      0 0 18px rgba(110, 231, 255, 0.3);
+      0 0 4px #ffffff,
+      0 0 10px var(--neon-cyan),
+      0 0 22px var(--neon-cyan),
+      0 0 36px var(--neon-magenta),
+      0 0 60px var(--neon-magenta);
+    position: relative;
+  }
+
+  .digital .time::before,
+  .digital .time::after {
+    content: attr(data-time);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .digital .time::before {
+    color: var(--neon-pink);
+    transform: translate(-2px, 0);
+    mix-blend-mode: screen;
+    opacity: 0.75;
+  }
+
+  .digital .time::after {
+    color: var(--neon-cyan);
+    transform: translate(2px, 0);
+    mix-blend-mode: screen;
+    opacity: 0.75;
   }
 
   .digital .time .sep {
     display: inline-block;
     width: 0.5ch;
     text-align: center;
+    color: var(--neon-yellow);
     animation: blink 1s steps(2, end) infinite;
+    text-shadow:
+      0 0 6px var(--neon-yellow),
+      0 0 14px var(--neon-yellow);
   }
 
   .digital .meta {
-    margin-top: 6px;
+    margin-top: 8px;
     font-size: clamp(10px, 1.8vmin, 13px);
-    letter-spacing: 0.2em;
-    color: rgba(232, 249, 255, 0.7);
+    letter-spacing: 0.35em;
+    color: var(--neon-lime);
     text-transform: uppercase;
+    text-shadow: 0 0 8px var(--neon-lime), 0 0 16px rgba(182, 255, 26, 0.5);
   }
 
   @keyframes blink {
-    50% { opacity: 0.25; }
+    50% { opacity: 0.15; }
   }
 
   .brand {
     position: absolute;
     left: 50%;
-    top: 32%;
+    top: 30%;
     transform: translate(-50%, -50%);
-    font-size: clamp(9px, 1.6vmin, 12px);
-    letter-spacing: 0.45em;
-    color: rgba(255, 255, 255, 0.45);
+    font-size: clamp(10px, 1.7vmin, 13px);
+    letter-spacing: 0.6em;
+    color: var(--neon-pink);
     text-transform: uppercase;
+    text-shadow:
+      0 0 6px var(--neon-pink),
+      0 0 14px var(--neon-magenta),
+      0 0 24px var(--neon-magenta);
+    z-index: 3;
+  }
+
+  .brand::after {
+    content: " v2.077";
+    color: var(--neon-cyan);
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan);
   }
 
   .hint {
@@ -212,23 +368,58 @@
     right: 0;
     text-align: center;
     font-size: 12px;
-    color: rgba(232, 249, 255, 0.45);
-    letter-spacing: 0.15em;
+    color: var(--neon-violet);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px var(--neon-violet), 0 0 14px var(--neon-violet);
+    z-index: 11;
+  }
+
+  .corner {
+    position: fixed;
+    font-size: 11px;
+    color: var(--neon-cyan);
+    letter-spacing: 0.25em;
+    text-shadow: 0 0 6px var(--neon-cyan);
+    z-index: 11;
+    opacity: 0.85;
+  }
+
+  .corner.tl { top: 16px; left: 20px; }
+  .corner.tr { top: 16px; right: 20px; color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink); }
+  .corner.bl { bottom: 16px; left: 20px; color: var(--neon-lime); text-shadow: 0 0 6px var(--neon-lime); }
+  .corner.br { bottom: 16px; right: 20px; color: var(--neon-yellow); text-shadow: 0 0 6px var(--neon-yellow); }
+
+  .glitch {
+    animation: glitch 8s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 97%, 100% { transform: translate(-50%, -50%); filter: none; }
+    97.5% { transform: translate(calc(-50% + 2px), -50%); filter: hue-rotate(90deg); }
+    98% { transform: translate(calc(-50% - 3px), -50%); filter: hue-rotate(-90deg); }
+    98.5% { transform: translate(-50%, calc(-50% + 1px)); filter: hue-rotate(45deg); }
+    99% { transform: translate(-50%, -50%); filter: none; }
   }
 </style>
 </head>
 <body>
-  <main class="clock" aria-label="ハイブリッド時計">
+  <div class="corner tl">◤ SYS::ONLINE</div>
+  <div class="corner tr">NET 5G ▮▮▮▮▯</div>
+  <div class="corner bl">LAT 35.6762 LNG 139.6503</div>
+  <div class="corner br">CORE 98% ◆</div>
+
+  <main class="clock" aria-label="サイバーパンク・ハイブリッド時計">
     <div class="ticks" id="ticks"></div>
     <div class="numbers" id="numbers"></div>
 
-    <div class="brand">HYBRID · CHRONO</div>
+    <div class="brand">CYBER CHRONO</div>
 
-    <div class="digital">
-      <div class="time">
+    <div class="digital glitch">
+      <div class="time" id="time" data-time="00:00:00">
         <span id="hh">00</span><span class="sep">:</span><span id="mm">00</span><span class="sep">:</span><span id="ss">00</span>
       </div>
-      <div class="meta"><span id="date"></span> · <span id="ampm"></span></div>
+      <div class="meta"><span id="date"></span> ▸ <span id="ampm"></span></div>
     </div>
 
     <div class="hand hour" id="hour"></div>
@@ -237,7 +428,7 @@
     <div class="cap"></div>
   </main>
 
-  <div class="hint">Analog + Digital · Live</div>
+  <div class="hint">// ANALOG ⨯ DIGITAL · NEON STREAM ACTIVE</div>
 
 <script>
   (function () {
@@ -258,10 +449,11 @@
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
       const el = document.createElement("div");
-      el.className = "number";
+      const isQuarter = n % 3 === 0;
+      el.className = "number" + (isQuarter ? " quarter" : "");
       el.style.setProperty("--x", `${x}%`);
       el.style.setProperty("--y", `${y}%`);
-      el.textContent = String(n);
+      el.textContent = String(n).padStart(2, "0");
       numbersEl.appendChild(el);
     }
 
@@ -271,6 +463,7 @@
     const hh = document.getElementById("hh");
     const mm = document.getElementById("mm");
     const ss = document.getElementById("ss");
+    const timeEl = document.getElementById("time");
     const dateEl = document.getElementById("date");
     const ampmEl = document.getElementById("ampm");
 
@@ -288,9 +481,13 @@
       minHand.style.transform = `translate(-50%, -100%) rotate(${m * 6}deg)`;
       hourHand.style.transform = `translate(-50%, -100%) rotate(${h * 30}deg)`;
 
-      hh.textContent = pad(now.getHours());
-      mm.textContent = pad(now.getMinutes());
-      ss.textContent = pad(now.getSeconds());
+      const H = pad(now.getHours());
+      const M = pad(now.getMinutes());
+      const S = pad(now.getSeconds());
+      hh.textContent = H;
+      mm.textContent = M;
+      ss.textContent = S;
+      timeEl.setAttribute("data-time", `${H}:${M}:${S}`);
 
       dateEl.textContent =
         `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())} ${weekday[now.getDay()]}`;
