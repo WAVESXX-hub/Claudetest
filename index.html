@@ -107,92 +107,111 @@
     z-index: 30;
   }
 
-  /* ===== MIRAGE DIGITAL CLOCK (far horizon) ===== */
-  .mirage {
+  /* ===== EDGE DIGITAL PANEL ===== */
+  .panel {
     position: fixed;
-    left: 0;
-    right: 0;
-    top: 78%;
-    transform: translateY(-100%);
-    text-align: center;
-    z-index: 2;
+    left: 50%;
+    top: 86%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
     pointer-events: none;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 
-  .mirage-stack {
+  .panel-time {
     position: relative;
-    display: inline-block;
-    transform: perspective(800px) rotateX(18deg);
-    transform-origin: 50% 100%;
-  }
-
-  .mirage-time {
-    font-family: "Orbitron", "Inter", system-ui, sans-serif;
-    font-weight: 300;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
-    font-size: clamp(80px, 18vw, 260px);
-    line-height: 0.85;
-    letter-spacing: 0.06em;
-    color: transparent;
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    padding: 14px 22px;
+    border: 1px solid rgba(125, 249, 255, 0.85);
     background:
-      linear-gradient(
-        180deg,
-        rgba(125, 249, 255, 0.0) 0%,
-        rgba(125, 249, 255, 0.55) 30%,
-        rgba(125, 249, 255, 0.85) 60%,
-        rgba(255, 159, 28, 0.45) 100%
-      );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: url(#heatHaze) blur(0.4px);
-    mix-blend-mode: screen;
-    opacity: 0.85;
-    animation: mirageSway 11s ease-in-out infinite;
+      linear-gradient(180deg, rgba(125, 249, 255, 0.06), rgba(0, 216, 255, 0.02));
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.6),
+      0 0 18px rgba(125, 249, 255, 0.45),
+      inset 0 0 14px rgba(125, 249, 255, 0.18);
+    clip-path: polygon(
+      14px 0,
+      calc(100% - 14px) 0,
+      100% 14px,
+      100% calc(100% - 14px),
+      calc(100% - 14px) 100%,
+      14px 100%,
+      0 calc(100% - 14px),
+      0 14px
+    );
   }
 
-  .mirage-echo {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
+  .panel-time .seg {
     font-family: "Orbitron", "Inter", system-ui, sans-serif;
-    font-weight: 300;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum" 1;
-    font-size: clamp(80px, 18vw, 260px);
-    line-height: 0.85;
-    letter-spacing: 0.06em;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(125, 249, 255, 0.35);
-    filter: blur(8px);
-    transform: scale(1.03);
-    opacity: 0.7;
-    animation: mirageDrift 16s ease-in-out infinite;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--tron-cyan);
+    text-shadow:
+      0 0 6px rgba(125, 249, 255, 0.85),
+      0 0 14px rgba(30, 167, 255, 0.55);
+    padding: 0 10px;
   }
 
-  .mirage-meta {
-    margin-top: 12px;
-    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
-    font-weight: 200;
+  .panel-time .sep {
+    align-self: center;
+    width: 1px;
+    height: 60%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(255, 159, 28, 0.85),
+      transparent
+    );
+    box-shadow: 0 0 6px rgba(255, 159, 28, 0.6);
+  }
+
+  /* corner brackets */
+  .panel-time::before,
+  .panel-time::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--tron-orange);
+    box-shadow: 0 0 6px rgba(255, 159, 28, 0.6);
+  }
+  .panel-time::before {
+    left: -6px; top: -6px;
+    border-right: none; border-bottom: none;
+  }
+  .panel-time::after {
+    right: -6px; bottom: -6px;
+    border-left: none; border-top: none;
+  }
+
+  .panel-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 300;
     font-size: clamp(10px, 1.2vmin, 12px);
-    letter-spacing: 0.5em;
-    color: rgba(255, 159, 28, 0.55);
-    text-shadow: 0 0 10px rgba(255, 159, 28, 0.45);
+    letter-spacing: 0.45em;
+    color: rgba(125, 249, 255, 0.85);
+    text-shadow: 0 0 6px rgba(125, 249, 255, 0.55);
     text-transform: uppercase;
-    filter: blur(0.3px);
   }
 
-  @keyframes mirageSway {
-    0%, 100% { transform: translateY(0) skewX(0deg); }
-    50%      { transform: translateY(-2px) skewX(0.2deg); }
-  }
-
-  @keyframes mirageDrift {
-    0%, 100% { transform: scale(1.04) translateY(0); opacity: 0.45; }
-    50%      { transform: scale(1.06) translateY(-3px); opacity: 0.7; }
+  .panel-meta .dot {
+    width: 4px; height: 4px;
+    background: var(--tron-orange);
+    box-shadow: 0 0 6px var(--tron-orange);
+    transform: rotate(45deg);
   }
 
   /* ===== QUIET ANALOG CLOCK ===== */
@@ -356,17 +375,6 @@
 </style>
 </head>
 <body>
-  <svg width="0" height="0" style="position:absolute">
-    <defs>
-      <filter id="heatHaze" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="3">
-          <animate attributeName="baseFrequency" dur="22s" values="0.012 0.03;0.018 0.045;0.012 0.03" repeatCount="indefinite"/>
-        </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" scale="10"/>
-      </filter>
-    </defs>
-  </svg>
-
   <div class="corner tl">USR / FLYNN</div>
   <div class="corner tr">GRID — ENC SEC</div>
   <div class="corner bl">CYCLE 1982</div>
@@ -384,11 +392,18 @@
     </div>
   </main>
 
-  <div class="mirage" aria-hidden="true">
-    <div class="mirage-stack">
-      <div class="mirage-echo" id="echo">00:00:00</div>
-      <div class="mirage-time" id="mirageTime">00:00:00</div>
-      <div class="mirage-meta"><span id="date"></span> ▸ <span id="ampm"></span></div>
+  <div class="panel" aria-hidden="true">
+    <div class="panel-time">
+      <span class="seg" id="hh">00</span>
+      <span class="sep"></span>
+      <span class="seg" id="mm">00</span>
+      <span class="sep"></span>
+      <span class="seg" id="ss">00</span>
+    </div>
+    <div class="panel-meta">
+      <span id="date"></span>
+      <span class="dot"></span>
+      <span id="ampm"></span>
     </div>
   </div>
 
@@ -407,8 +422,9 @@
     const hourHand = document.getElementById("hour");
     const minHand = document.getElementById("minute");
     const secHand = document.getElementById("second");
-    const mirageTime = document.getElementById("mirageTime");
-    const echo = document.getElementById("echo");
+    const hh = document.getElementById("hh");
+    const mm = document.getElementById("mm");
+    const ss = document.getElementById("ss");
     const dateEl = document.getElementById("date");
     const ampmEl = document.getElementById("ampm");
 
@@ -426,9 +442,9 @@
       minHand.style.transform = `translate(-50%, -100%) rotate(${m * 6}deg)`;
       hourHand.style.transform = `translate(-50%, -100%) rotate(${h * 30}deg)`;
 
-      const text = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      mirageTime.textContent = text;
-      echo.textContent = text;
+      hh.textContent = pad(now.getHours());
+      mm.textContent = pad(now.getMinutes());
+      ss.textContent = pad(now.getSeconds());
 
       dateEl.textContent =
         `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())} ${weekday[now.getDay()]}`;
