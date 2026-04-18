@@ -650,18 +650,18 @@
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const angle = rand(18, 32);        // degrees below horizontal
-      const a = -angle;                  // CSS rotate is clockwise-negative for upward slope
+      const angleDeg = rand(18, 32);                 // down-right slope
+      const rad = (angleDeg * Math.PI) / 180;
       const length = rand(180, 360);
       const duration = rand(700, 1200);
-      const startY = rand(-vh * 0.2, vh * 0.7);
+      const startY = rand(-vh * 0.3, vh * 0.5);
       const startX = -length - rand(0, vw * 0.2);
-      const travel = vw + length + rand(0, vw * 0.3);
-      const dx = travel;
-      const dy = travel * Math.tan((angle * Math.PI) / 180);
+      const travel = vw + length * 2 + rand(0, vw * 0.3);
+      const dx = Math.cos(rad) * travel;
+      const dy = Math.sin(rad) * travel;
 
       m.style.width = `${length}px`;
-      m.style.setProperty("--a", `${a}deg`);
+      m.style.setProperty("--a", `${angleDeg}deg`);
       m.style.setProperty("--x0", `${startX}px`);
       m.style.setProperty("--y0", `${startY}px`);
       m.style.setProperty("--x1", `${startX + dx}px`);
