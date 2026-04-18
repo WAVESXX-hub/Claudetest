@@ -201,30 +201,64 @@
   .panel-meta {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
-    width: 28ch;
+    justify-content: space-between;
+    width: min(640px, 92vw);
+    gap: 0;
+    padding: 0 4px;
     font-family: "Inter", system-ui, sans-serif;
     font-weight: 300;
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum" 1;
-    font-size: clamp(10px, 1.2vmin, 12px);
-    letter-spacing: 0.45em;
-    color: rgba(125, 249, 255, 0.85);
-    text-shadow: 0 0 6px rgba(125, 249, 255, 0.55);
+    font-size: 10px;
+    color: rgba(125, 249, 255, 0.7);
     text-transform: uppercase;
   }
 
-  .panel-meta #date {
-    display: inline-block;
+  .cal-day {
+    flex: 1 1 0;
+    position: relative;
     text-align: center;
-    min-width: 18ch;
+    padding-top: 2px;
+    padding-bottom: 10px;
+    letter-spacing: 0.02em;
+    color: rgba(125, 249, 255, 0.55);
   }
 
-  .panel-meta #ampm {
-    display: inline-block;
-    text-align: center;
-    min-width: 3ch;
+  .cal-day::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1px;
+    height: 4px;
+    background: rgba(125, 249, 255, 0.35);
+    transform: translateX(-50%);
+  }
+
+  .cal-day.major::after {
+    height: 9px;
+    background: rgba(125, 249, 255, 0.7);
+  }
+
+  .cal-day.today {
+    color: var(--tron-orange);
+    text-shadow:
+      0 0 6px rgba(255, 159, 28, 0.9),
+      0 0 16px rgba(255, 159, 28, 0.55);
+    font-weight: 500;
+  }
+
+  .cal-day.today::after {
+    height: 12px;
+    width: 2px;
+    background: var(--tron-orange);
+    box-shadow:
+      0 0 6px rgba(255, 159, 28, 0.9),
+      0 0 14px rgba(255, 159, 28, 0.6);
+  }
+
+  .cal-day.ghost {
+    opacity: 0.18;
   }
 
   /* ===== METEOR SHOWER (every :00 and :30) ===== */
@@ -612,11 +646,7 @@
       <span class="sep"></span>
       <span class="seg" id="ss">00</span>
     </div>
-    <div class="panel-meta">
-      <span id="date"></span>
-      <span class="dot"></span>
-      <span id="ampm"></span>
-    </div>
+    <div class="panel-meta" id="calendar"></div>
   </div>
 
 <script>
@@ -637,8 +667,7 @@
     const hh = document.getElementById("hh");
     const mm = document.getElementById("mm");
     const ss = document.getElementById("ss");
-    const dateEl = document.getElementById("date");
-    const ampmEl = document.getElementById("ampm");
+    const calEl = document.getElementById("calendar");
     const sunArm = document.getElementById("sunArm");
     const moonArm = document.getElementById("moonArm");
     const moonShadow = document.getElementById("moonShadow");
@@ -737,7 +766,30 @@
     }
 
     const pad = (n) => String(n).padStart(2, "0");
-    const weekday = ["日", "月", "火", "水", "木", "金", "土"];
+
+    let calendarKey = "";
+    function renderCalendar(now) {
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const today = now.getDate();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const key = `${year}-${month}-${today}`;
+      if (key === calendarKey) return;
+      calendarKey = key;
+
+      const frag = document.createDocumentFragment();
+      for (let d = 1; d <= 31; d++) {
+        const c = document.createElement("div");
+        c.className = "cal-day";
+        if (d > daysInMonth) c.classList.add("ghost");
+        if (d === today && d <= daysInMonth) c.classList.add("today");
+        if (d % 5 === 0 || d === 1) c.classList.add("major");
+        c.textContent = pad(d);
+        frag.appendChild(c);
+      }
+      calEl.innerHTML = "";
+      calEl.appendChild(frag);
+    }
 
     function tick() {
       const now = new Date();
@@ -754,9 +806,7 @@
       mm.textContent = pad(now.getMinutes());
       ss.textContent = pad(now.getSeconds());
 
-      dateEl.textContent =
-        `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())} ${weekday[now.getDay()]}`;
-      ampmEl.textContent = now.getHours() < 12 ? "AM" : "PM";
+      renderCalendar(now);
 
       const { sunLon, moonLon, phase } = celestial(now);
       sunArm.style.transform  = `translate(-50%, -50%) rotate(${sunLon}deg)`;
